@@ -64,117 +64,201 @@ function monsterSpeak() {
     setTimeout(() => s.style.display = 'none', 4000);
 }
 
-// ===== ДЫХАНИЕ (ИСПРАВЛЕННАЯ ЛОГИКА) =====
+
+// ===== ДЫХАНИЕ (ПЛАВНЫЙ ЗВУК) =====
 let breathingInterval;
 let breathingPhase = 0;
-const phases = ['Вдох...', 'Задержка...', 'Выдох...', 'Задержка...'];
 
-// Мягкий звук дыхания: плавный тон вверх на вдохе, вниз на выдохе, на задержках тишина
+const phases = [
+    'Вдох...',
+    'Задержка...',
+    'Выдох...',
+    'Задержка...'
+];
+
 let breathingAudio = null;
 let breathingTone = null;
 
+// Создание постоянного звука
 function getBreathingAudio() {
     const AC = window.AudioContext || window.webkitAudioContext;
     if (!AC) return null;
+
     if (!breathingAudio) {
         const ctx = new AC();
+
         const filter = ctx.createBiquadFilter();
         filter.type = 'lowpass';
-        filter.frequency.value = 600;
-        filter.connect(ctx.destination);
-        breathingAudio = { ctx, filter };
+        filter.frequency.value = 500;
+
+        const gain = ctx.createGain();
+        gain.gain.value = 0.0001;
+
+        const osc = ctx.createOscillator();
+        osc.type = 'sine';
+        osc.frequency.value = 180;
+
+        osc.connect(filter);
+        filter.connect(gain);
+        gain.connect(ctx.destination);
+
+        osc.start();
+
+        breathingAudio = {
+            ctx,
+            osc,
+            gain,
+            filter
+        };
+
+        breathingTone = osc;
     }
-    if (breathingAudio.ctx.state === 'suspended') breathingAudio.ctx.resume();
+
+    if (breathingAudio.ctx.state === 'suspended') {
+        breathingAudio.ctx.resume();
+    }
+
     return breathingAudio;
 }
 
+// Плавный вдох и выдох
 function playBreathTone(rising) {
     try {
         const a = getBreathingAudio();
         if (!a) return;
 
-        const { ctx, filter } = a;
+        const { ctx, osc, gain } = a;
         const now = ctx.currentTime;
-        const dur = 4;
 
-        const from = rising ? 196 : 262;
-        const to = rising ? 262 : 196;
+        const startFrequency = rising ? 180 : 260;
+        const endFrequency = rising ? 260 : 180;
 
-        const gain = ctx.createGain();
+        const startVolume = rising ? 0.008 : 0.025;
+        const endVolume = rising ? 0.025 : 0.008;
 
-        // Очень тихое и плавное звучание
-        gain.gain.setValueAtTime(0.0001, now);
-        gain.gain.linearRampToValueAtTime(0.012, now + 2);
+        // Плавное изменение частоты
+        osc.frequency.cancelScheduledValues(now);
+        osc.frequency.setValueAtTime(
+            osc.frequency.value, now
+        );
+        osc.frequency.linearRampToValueAtTime(
+            endFrequency, now + 4
+        );
 
-        gain.gain.setValueAtTime(0.012, now + 2.5);
-        gain.gain.linearRampToValueAtTime(0.0001, now + dur);
-
-        gain.connect(filter);
-
-        const osc = ctx.createOscillator();
-        osc.type = 'sine';
-
-        // Плавное изменение тона
-        osc.frequency.setValueAtTime(from, now);
-        osc.frequency.exponentialRampToValueAtTime(to, now + dur);
-
-        osc.connect(gain);
-        osc.start(now);
-        osc.stop(now + dur + 0.1);
-
-        breathingTone = { gain, oscs: [osc], ctx };
-
-    } catch (e) {}
-}
-
-function fadeOutBreathTone() {
-    if (!breathingTone) return;
-    const { gain, oscs, ctx } = breathingTone;
-    breathingTone = null;
-    try {
-        const now = ctx.currentTime;
+        // Плавное изменение громкости
         gain.gain.cancelScheduledValues(now);
-        gain.gain.setTargetAtTime(0.0001, now, 0.15);
-        oscs.forEach(o => { try { o.stop(now + 0.8); } catch (e) {} });
+        gain.gain.setValueAtTime(
+            gain.gain.value, now
+        );
+        gain.gain.linearRampToValueAtTime(
+            endVolume, now + 4
+        );
+
+    } catch (e) {
+        console.log('Ошибка звука дыхания:', e);
+    }
+}
+
+// Тихий звук во время задержки
+function holdBreathTone() {
+    try {
+        if (!breathingAudio) return;
+
+        const { ctx, gain } = breathingAudio;
+        const now = ctx.currentTime;
+
+        gain.gain.cancelScheduledValues(now);
+        gain.gain.setValueAtTime(gain.gain.value, now);
+
+        // Почти неслышный фоновый звук
+        gain.gain.linearRampToValueAtTime(
+            0.002, now + 0.5
+        );
+
     } catch (e) {}
 }
 
+// Полная остановка звука
+function fadeOutBreathTone() {
+    if (!breathingAudio) return;
+
+    const audio = breathingAudio;
+    breathingAudio = null;
+    breathingTone = null;
+
+    try {
+        const { ctx, gain, osc } = audio;
+        const now = ctx.currentTime;
+
+        gain.gain.cancelScheduledValues(now);
+        gain.gain.setValueAtTime(gain.gain.value, now);
+
+        gain.gain.linearRampToValueAtTime(
+            0.0001, now + 0.4
+        );
+
+        osc.stop(now + 0.5);
+
+        setTimeout(() => {
+            ctx.close();
+        }, 600);
+
+    } catch (e) {}
+}
+
+// Запуск дыхания
 function startBreathing() {
     stopBreathing();
+
     breathingPhase = 0;
     updateBreathingPhase();
+
     breathingInterval = setInterval(() => {
         breathingPhase = (breathingPhase + 1) % 4;
         updateBreathingPhase();
     }, 4000);
 }
 
+// Переключение фаз
 function updateBreathingPhase() {
     const circle = document.getElementById('breathingCircle');
     const text = document.getElementById('breathingText');
+
     text.textContent = phases[breathingPhase];
 
     if (breathingPhase === 0) {
+        // Вдох: шар увеличивается, звук становится выше
         circle.classList.add('inhale');
         playBreathTone(true);
+
     } else if (breathingPhase === 1) {
-        // задержка — шар не меняется
+        // Задержка: тихий звук
+        holdBreathTone();
+
     } else if (breathingPhase === 2) {
+        // Выдох: шар уменьшается, звук становится ниже
         circle.classList.remove('inhale');
         playBreathTone(false);
+
     } else if (breathingPhase === 3) {
-        // задержка — шар не меняется
+        // Задержка: тихий звук
+        holdBreathTone();
     }
 }
 
+// Остановка дыхания
 function stopBreathing() {
     clearInterval(breathingInterval);
+
     fadeOutBreathTone();
+
     const circle = document.getElementById('breathingCircle');
     const text = document.getElementById('breathingText');
+
     circle.classList.remove('inhale');
     text.textContent = 'Готов?';
 }
+
 // ===== ВОДА =====
 let waterCount = parseInt(localStorage.getItem('zoiWaterCount')) || 0;
 
