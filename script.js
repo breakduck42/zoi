@@ -69,6 +69,69 @@ let breathingInterval;
 let breathingPhase = 0;
 const phases = ['Вдох...', 'Задержка...', 'Выдох...', 'Задержка...'];
 
+// Мягкий звук дыхания: плавный тон вверх на вдохе, вниз на выдохе, на задержках тишина
+let breathingAudio = null;
+let breathingTone = null;
+
+function getBreathingAudio() {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return null;
+    if (!breathingAudio) {
+        const ctx = new AC();
+        const filter = ctx.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.value = 600;
+        filter.connect(ctx.destination);
+        breathingAudio = { ctx, filter };
+    }
+    if (breathingAudio.ctx.state === 'suspended') breathingAudio.ctx.resume();
+    return breathingAudio;
+}
+
+function playBreathTone(rising) {
+    try {
+        const a = getBreathingAudio();
+        if (!a) return;
+        const { ctx, filter } = a;
+        const now = ctx.currentTime;
+        const dur = 4;
+        const from = rising ? 196 : 262;
+        const to   = rising ? 262 : 196;
+
+        const gain = ctx.createGain();
+        gain.gain.setValueAtTime(0.0001, now);
+        gain.gain.linearRampToValueAtTime(0.045, now + 1.2);
+        gain.gain.setValueAtTime(0.045, now + dur - 1.4);
+        gain.gain.linearRampToValueAtTime(0.0001, now + dur);
+        gain.connect(filter);
+
+        const oscs = [-4, 4].map(detune => {
+            const o = ctx.createOscillator();
+            o.type = 'sine';
+            o.detune.value = detune;
+            o.frequency.setValueAtTime(from, now);
+            o.frequency.exponentialRampToValueAtTime(to, now + dur);
+            o.connect(gain);
+            o.start(now);
+            o.stop(now + dur + 0.1);
+            return o;
+        });
+        breathingTone = { gain, oscs, ctx };
+    } catch (e) {}
+}
+
+function fadeOutBreathTone() {
+    if (!breathingTone) return;
+    const { gain, oscs, ctx } = breathingTone;
+    breathingTone = null;
+    try {
+        const now = ctx.currentTime;
+        gain.gain.cancelScheduledValues(now);
+        gain.gain.setTargetAtTime(0.0001, now, 0.15);
+        oscs.forEach(o => { try { o.stop(now + 0.8); } catch (e) {} });
+    } catch (e) {}
+}
+
 function startBreathing() {
     stopBreathing();
     breathingPhase = 0;
@@ -83,29 +146,28 @@ function updateBreathingPhase() {
     const circle = document.getElementById('breathingCircle');
     const text = document.getElementById('breathingText');
     text.textContent = phases[breathingPhase];
-    
-    // Логика: шар меняется ТОЛЬКО на вдохе и выдохе
+
     if (breathingPhase === 0) {
-        // ВДОХ — шар растёт
         circle.classList.add('inhale');
+        playBreathTone(true);
     } else if (breathingPhase === 1) {
-        // ЗАДЕРЖКА после вдоха — шар НЕ меняется (остаётся большим)
+        // задержка — шар не меняется
     } else if (breathingPhase === 2) {
-        // ВЫДОХ — шар уменьшается
         circle.classList.remove('inhale');
+        playBreathTone(false);
     } else if (breathingPhase === 3) {
-        // ЗАДЕРЖКА после выдоха — шар НЕ меняется (остаётся маленьким)
+        // задержка — шар не меняется
     }
 }
 
 function stopBreathing() {
     clearInterval(breathingInterval);
+    fadeOutBreathTone();
     const circle = document.getElementById('breathingCircle');
     const text = document.getElementById('breathingText');
     circle.classList.remove('inhale');
     text.textContent = 'Готов?';
 }
-
 // ===== ВОДА =====
 let waterCount = parseInt(localStorage.getItem('zoiWaterCount')) || 0;
 
