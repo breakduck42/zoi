@@ -92,31 +92,38 @@ function playBreathTone(rising) {
     try {
         const a = getBreathingAudio();
         if (!a) return;
+
         const { ctx, filter } = a;
         const now = ctx.currentTime;
         const dur = 4;
+
         const from = rising ? 196 : 262;
-        const to   = rising ? 262 : 196;
+        const to = rising ? 262 : 196;
 
         const gain = ctx.createGain();
+
+        // Очень тихое и плавное звучание
         gain.gain.setValueAtTime(0.0001, now);
-        gain.gain.linearRampToValueAtTime(0.045, now + 1.2);
-        gain.gain.setValueAtTime(0.045, now + dur - 1.4);
+        gain.gain.linearRampToValueAtTime(0.012, now + 2);
+
+        gain.gain.setValueAtTime(0.012, now + 2.5);
         gain.gain.linearRampToValueAtTime(0.0001, now + dur);
+
         gain.connect(filter);
 
-        const oscs = [-4, 4].map(detune => {
-            const o = ctx.createOscillator();
-            o.type = 'sine';
-            o.detune.value = detune;
-            o.frequency.setValueAtTime(from, now);
-            o.frequency.exponentialRampToValueAtTime(to, now + dur);
-            o.connect(gain);
-            o.start(now);
-            o.stop(now + dur + 0.1);
-            return o;
-        });
-        breathingTone = { gain, oscs, ctx };
+        const osc = ctx.createOscillator();
+        osc.type = 'sine';
+
+        // Плавное изменение тона
+        osc.frequency.setValueAtTime(from, now);
+        osc.frequency.exponentialRampToValueAtTime(to, now + dur);
+
+        osc.connect(gain);
+        osc.start(now);
+        osc.stop(now + dur + 0.1);
+
+        breathingTone = { gain, oscs: [osc], ctx };
+
     } catch (e) {}
 }
 
