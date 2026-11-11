@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zoi — баланс здоровья и разума</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- ===== ШАПКА ===== -->
+    <header>
+        <div class="nav-container">
+            <div class="logo" onclick="showPage('home')">
+                <svg width="32" height="32" viewBox="0 0 200 200">
+                    <defs>
+                        <linearGradient id="lg" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#C17F59"/>
+                            <stop offset="100%" style="stop-color:#8B9D77"/>
+                        </linearGradient>
+                    </defs>
+                    <path d="M100 180 C 20 120, 0 80, 30 50 C 60 20, 90 40, 100 60 C 110 40, 140 20, 170 50 C 200 80, 180 120, 100 180 Z" fill="url(#lg)"/>
+                    <ellipse cx="100" cy="115" rx="8" ry="12" fill="#A8D8EA" opacity="0.8"/>
+                </svg>
+                <span><span class="logo-z">Z</span><span class="logo-oi">oi</span></span>
+            </div>
+            <nav>
+                <ul>
+                    <li><a onclick="showPage('home')" class="nav-link active" data-page="home">Главная</a></li>
+                    <li><a onclick="showPage('breathing')" class="nav-link" data-page="breathing">Дыхание</a></li>
+                    <li><a onclick="showPage('water')" class="nav-link" data-page="water">Вода</a></li>
+                    <li><a onclick="showPage('memory')" class="nav-link" data-page="memory">Память</a></li>
+                    <li><a onclick="showPage('feedback')" class="nav-link" data-page="feedback">Обратная связь</a></li>
+                    <li><a onclick="showPage('about')" class="nav-link" data-page="about">О проекте</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- ===== МОНСТРИК ===== -->
+    <div class="tree-monster" onclick="monsterSpeak()" title="Нажми на меня!">
+        <svg viewBox="0 0 140 180">
+            <ellipse cx="70" cy="175" rx="35" ry="5" fill="rgba(0,0,0,0.1)"/>
+            <rect x="50" y="140" width="12" height="30" rx="6" fill="#8B6F47"/>
+            <rect x="78" y="140" width="12" height="30" rx="6" fill="#8B6F47"/>
+            <ellipse cx="70" cy="100" rx="40" ry="55" fill="#A8D5A2"/>
+            <path d="M 30 90 Q 15 85 10 95 Q 15 100 30 95" fill="#8B6F47"/>
+            <path d="M 110 90 Q 125 85 130 95 Q 125 100 110 95" fill="#8B6F47"/>
+            <path d="M 70 50 Q 90 20 100 30 Q 95 50 70 60 Q 50 50 55 35 Q 60 30 70 50" fill="#7CB342"/>
+            <circle cx="55" cy="85" r="12" fill="white"/>
+            <circle cx="85" cy="85" r="12" fill="white"/>
+            <circle cx="57" cy="87" r="7" fill="#333"/>
+            <circle cx="87" cy="87" r="7" fill="#333"/>
+            <circle cx="59" cy="85" r="2.5" fill="white"/>
+            <circle cx="89" cy="85" r="2.5" fill="white"/>
+            <ellipse cx="45" cy="105" rx="6" ry="4" fill="#FFB6C1" opacity="0.6"/>
+            <ellipse cx="95" cy="105" rx="6" ry="4" fill="#FFB6C1" opacity="0.6"/>
+            <path d="M 60 110 Q 70 118 80 110" stroke="#333" stroke-width="2" fill="none" stroke-linecap="round"/>
+        </svg>
+    </div>
+    <div class="monster-speech" id="monsterSpeech"></div>
+
+    <main>
+        <!-- ===== ГЛАВНАЯ ===== -->
+        <section id="home" class="page active">
+            <div class="hero">
+                <h1>Zoi — баланс здоровья и разума</h1>
+                <div class="subtitle">Ежедневные привычки — без лишнего шума</div>
+                <p>Три простых инструмента помогут вам поддерживать баланс тела и разума в течение дня. Дышите, пейте воду, тренируйте память.</p>
+                <div class="hero-badges">
+                    <span>⭐ 4.5 · Полезно</span>
+                    <span>🌿 Без регистрации</span>
+                    <span>📱 Работает везде</span>
+                </div>
+                <div class="hero-buttons">
+                    <button class="btn btn-primary" onclick="showPage('memory')">Начать тренировку</button>
+                    <button class="btn btn-outline" onclick="showPage('breathing')">Как это работает</button>
+                </div>
+            </div>
+
+            <div class="stats">
+                <div class="stat-item">
+                    <span class="stat-value">4 мин</span>
+                    <span class="stat-label">дыхание для перезагрузки</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value">8 стаканов</span>
+                    <span class="stat-label">воды в день</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value">3 уровня</span>
+                    <span class="stat-label">сложности памяти</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value">7 дней</span>
+                    <span class="stat-label">в неделю</span>
+                </div>
+            </div>
+
+            <div class="promo">
+                <div class="promo-icon">🌱</div>
+                <div class="promo-text">
+                    <strong>Совет дня:</strong> Выпейте стакан воды прямо сейчас — даже лёгкое обезвоживание снижает концентрацию на 25%.
+                </div>
+            </div>
+
+            <section class="container">
+                <div class="section-header">
+                    <h2>Почему Zoi?</h2>
+                    <p>Просто начать. Удобно использовать.</p>
+                </div>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">⚡</div>
+                        <h3>Быстрый старт</h3>
+                        <p>Никакой регистрации и настроек. Открыли — и сразу пользуетесь. Все данные хранятся локально.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🔒</div>
+                        <h3>Приватность</h3>
+                        <p>Все данные остаются в вашем браузере. Мы не собираем и не передаём личную информацию.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📱</div>
+                        <h3>Удобно с телефона</h3>
+                        <p>Адаптивный интерфейс работает на смартфонах, планшетах и компьютерах одинаково хорошо.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="container" style="background: var(--bg); padding: 4rem 2rem; border-radius: 20px; margin: 2rem auto; max-width: 1200px;">
+                <div class="section-header">
+                    <h2>Начните с этого</h2>
+                    <p>Что попробовать сегодня?</p>
+                </div>
+                <div class="tools-grid">
+                    <div class="tool-card" onclick="showPage('breathing')">
+                        <div class="tool-image">
+                            <span class="tool-badge">Хит</span>
+                            🌬️
+                        </div>
+                        <div class="tool-content">
+                            <h3>Квадратное дыхание</h3>
+                            <p>Техника 4-4-4-4 для снятия стресса и улучшения концентрации за 4 минуты.</p>
+                            <div class="tool-footer">
+                                <span class="tool-price">Бесплатно</span>
+                                <button class="tool-btn">Начать</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tool-card" onclick="showPage('water')">
+                        <div class="tool-image" style="background: linear-gradient(135deg, #A8D8EA 0%, #5B9BD5 100%);">
+                            <span class="tool-badge new">Новинка</span>
+                            💧
+                        </div>
+                        <div class="tool-content">
+                            <h3>Водный баланс</h3>
+                            <p>Отслеживайте потребление воды. Простой трекер с визуальными стаканами.</p>
+                            <div class="tool-footer">
+                                <span class="tool-price">Бесплатно</span>
+                                <button class="tool-btn">Открыть</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tool-card" onclick="showPage('memory')">
+                        <div class="tool-image" style="background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);">
+                            <span class="tool-badge popular">Популярное</span>
+                            🧠
+                        </div>
+                        <div class="tool-content">
+                            <h3>Тренировка памяти</h3>
+                            <p>Запоминайте слова и проверяйте себя. 3 уровня сложности, система очков.</p>
+                            <div class="tool-footer">
+                                <span class="tool-price">Бесплатно</span>
+                                <button class="tool-btn">Играть</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="container">
+                <div class="section-header">
+                    <h2>Структура сервиса</h2>
+                    <p>Всё необходимое в одном месте</p>
+                </div>
+                <div class="structure-grid">
+                    <div class="structure-item">
+                        <div class="structure-icon">🌬️</div>
+                        <h4>Дыхание</h4>
+                        <p>Квадратная техника · таймер · анимация</p>
+                    </div>
+                    <div class="structure-item">
+                        <div class="structure-icon">💧</div>
+                        <h4>Вода</h4>
+                        <p>Трекер · цель 8 стаканов · статистика</p>
+                    </div>
+                    <div class="structure-item">
+                        <div class="structure-icon">🧠</div>
+                        <h4>Память</h4>
+                        <p>Слова · уровни · очки · таймер</p>
+                    </div>
+                    <div class="structure-item">
+                        <div class="structure-icon">🌳</div>
+                        <h4>Монстрик</h4>
+                        <p>Советы · напоминания · поддержка</p>
+                    </div>
+                    <div class="structure-item">
+                        <div class="structure-icon">💬</div>
+                        <h4>Обратная связь</h4>
+                        <p>Отзывы · предложения · оценка</p>
+                    </div>
+                    <div class="structure-item">
+                        <div class="structure-icon">📖</div>
+                        <h4>О проекте</h4>
+                        <p>Миссия · принципы · технологии</p>
+                    </div>
+                </div>
+            </section>
+        </section>
+
+        <!-- ===== ДЫХАНИЕ (ИСПРАВЛЕНО) ===== -->
+        <section id="breathing" class="page">
+            <div class="container breathing-page">
+                <div class="section-header">
+                    <h2>Квадратное дыхание</h2>
+                    <p>Техника 4-4-4-4 для снятия стресса</p>
+                </div>
+
+                <!-- Кнопки ПЕРЕД шаром, чтобы шар их не перекрывал -->
+                <div class="hero-buttons">
+                    <button class="btn btn-accent" onclick="startBreathing()">Начать</button>
+                    <button class="btn btn-outline" style="color: var(--primary-dark); border-color: var(--primary-dark);" onclick="stopBreathing()">Стоп</button>
+                </div>
+
+                <!-- Шар ПОСЛЕ кнопок -->
+                <div class="breathing-circle" id="breathingCircle">
+                    <span id="breathingText">Готов?</span>
+                </div>
+
+                <div class="features-grid" style="margin-top: 3rem;">
+                    <div class="feature-card">
+                        <div class="feature-icon">⏱️</div>
+                        <h3>Как это работает</h3>
+                        <p>
+                            <strong>4 сек</strong> — вдох (шар растёт)<br>
+                            <strong>4 сек</strong> — задержка (шар не меняется)<br>
+                            <strong>4 сек</strong> — выдох (шар уменьшается)<br>
+                            <strong>4 сек</strong> — задержка (шар не меняется)
+                        </p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">💡</div>
+                        <h3>Совет</h3>
+                        <p>Сидите прямо, расслабьте плечи. Дышите медленно и глубоко. Практикуйте 5-10 минут для максимального эффекта.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">✨</div>
+                        <h3>Польза</h3>
+                        <p>Снижает кортизол, активирует парасимпатическую систему, улучшает концентрацию, помогает при тревожности.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== ВОДА ===== -->
+        <section id="water" class="page">
+            <div class="container water-page">
+                <div class="section-header">
+                    <h2>Водный баланс</h2>
+                    <p>Ваша цель: 8 стаканов (2 литра) в день</p>
+                </div>
+                
+                <div class="water-progress">
+                    Выпито: <span id="waterCount">0</span> из 8 стаканов
+                </div>
+
+                <div class="water-glasses" id="waterGlasses"></div>
+
+                <button class="btn btn-outline" style="color: var(--primary-dark); border-color: var(--primary-dark);" onclick="resetWater()">Сбросить день</button>
+
+                <div class="features-grid" style="margin-top: 3rem;">
+                    <div class="feature-card">
+                        <div class="feature-icon">⚡</div>
+                        <h3>Энергия</h3>
+                        <p>Даже лёгкое обезвоживание снижает концентрацию и вызывает усталость.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🌸</div>
+                        <h3>Кожа</h3>
+                        <p>Вода поддерживает эластичность и здоровье кожи изнутри.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🧠</div>
+                        <h3>Мозг</h3>
+                        <p>Улучшает когнитивные функции, настроение и ясность мышления.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== ПАМЯТЬ ===== -->
+        <section id="memory" class="page">
+            <div class="container memory-page">
+                <div class="section-header">
+                    <h2>Тренировка памяти</h2>
+                    <p>Запомните слова за 10 секунд, выберите за 30 секунд. +5 очков за верный ответ.</p>
+                </div>
+                
+                <div class="level-dots" id="levelIndicator">
+                    <div class="level-dot active"></div>
+                    <div class="level-dot"></div>
+                    <div class="level-dot"></div>
+                </div>
+                
+                <div class="memory-timer" id="memoryTimer"></div>
+                <div class="score-display" id="scoreDisplay">Очки: 0</div>
+                
+                <div class="words-display" id="wordsDisplay">
+                    <p style="color: var(--text-light);">Нажмите "Начать игру" чтобы начать</p>
+                </div>
+                <div class="word-options" id="wordOptions"></div>
+                
+                <div class="hero-buttons">
+                    <button class="btn btn-accent" id="startMemoryBtn" onclick="startMemoryGame()">Начать игру</button>
+                    <button class="btn btn-outline" style="color: var(--primary-dark); border-color: var(--primary-dark);" id="checkMemoryBtn" onclick="checkMemory()" style="display:none;">Проверить</button>
+                    <button class="btn btn-outline" style="color: var(--primary-dark); border-color: var(--primary-dark);" id="nextLevelBtn" onclick="nextLevel()" style="display:none;">Следующий уровень</button>
+                </div>
+
+                <div class="features-grid" style="margin-top: 3rem;">
+                    <div class="feature-card">
+                        <div class="feature-icon">1️⃣</div>
+                        <h3>Уровень 1</h3>
+                        <p>3 слова для запоминания. Идеально для начала.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">2️⃣</div>
+                        <h3>Уровень 2</h3>
+                        <p>4 слова. Средний уровень сложности.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">3️⃣</div>
+                        <h3>Уровень 3</h3>
+                        <p>5 слов. Для настоящих чемпионов памяти.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== ОБРАТНАЯ СВЯЗЬ ===== -->
+        <section id="feedback" class="page">
+            <div class="container feedback-page">
+                <div class="section-header">
+                    <h2>Обратная связь</h2>
+                    <p>Ваше мнение важно для нас</p>
+                </div>
+                
+                <div class="feedback-form">
+                    <form id="feedbackForm" onsubmit="submitFeedback(event)">
+                        <div class="form-group">
+                            <label for="name">Ваше имя</label>
+                            <input type="text" id="name" placeholder="Как к вам обращаться?">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" placeholder="Для связи с вами">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="category">Категория</label>
+                            <select id="category" required>
+                                <option value="">Выберите категорию</option>
+                                <option value="suggestion">Предложение</option>
+                                <option value="bug">Ошибка</option>
+                                <option value="feature">Новая функция</option>
+                                <option value="compliment">Благодарность</option>
+                                <option value="other">Другое</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Оценка</label>
+                            <div class="rating" id="rating">
+                                <span class="rating-star" onclick="setRating(1)">★</span>
+                                <span class="rating-star" onclick="setRating(2)">★</span>
+                                <span class="rating-star" onclick="setRating(3)">★</span>
+                                <span class="rating-star" onclick="setRating(4)">★</span>
+                                <span class="rating-star" onclick="setRating(5)">★</span>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="message">Сообщение</label>
+                            <textarea id="message" placeholder="Расскажите подробнее..." required></textarea>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-accent" style="width: 100%;">Отправить</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== О ПРОЕКТЕ ===== -->
+        <section id="about" class="page">
+            <div class="container about-page">
+                <div class="about-content">
+                    <div class="section-header">
+                        <h2>О проекте Zoi</h2>
+                        <p>Zoi с греческого — "жизнь"</p>
+                    </div>
+                    
+                    <h2>Наша миссия</h2>
+                    <p>Zoi создан для того, чтобы помочь людям вернуться к простым, но эффективным практикам заботы о здоровье. Без сложных регистраций, без платных подписок, без лишнего шума.</p>
+
+                    <h2>Три столпа здоровья</h2>
+                    <ul>
+                        <li><strong>Дыхание</strong> — основа жизни и мощный инструмент управления стрессом</li>
+                        <li><strong>Вода</strong> — фундамент всех процессов в организме</li>
+                        <li><strong>Память</strong> — тренировка когнитивных способностей в любом возрасте</li>
+                    </ul>
+
+                    <h2>Принципы</h2>
+                    <ul>
+                        <li><strong>Простота</strong> — открыл и пользуешься</li>
+                        <li><strong>Приватность</strong> — данные хранятся локально</li>
+                        <li><strong>Доступность</strong> — работает на любом устройстве</li>
+                        <li><strong>Бесплатность</strong> — здоровье не должно стоить денег</li>
+                    </ul>
+
+                    <h2>Технологии</h2>
+                    <p>HTML5, CSS3, JavaScript, SVG. Адаптивный дизайн с Flexbox и Grid. Весь код открыт и работает полностью в браузере без сервера.</p>
+
+                    <h2>Контакты</h2>
+                    <p>Есть вопросы? Используйте форму обратной связи. Мы читаем все сообщения и стараемся отвечать в течение нескольких дней.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ===== ФУТЕР ===== -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-col">
+                <div class="logo" style="margin-bottom: 1rem;">
+                    <svg width="28" height="28" viewBox="0 0 200 200">
+                        <path d="M100 180 C 20 120, 0 80, 30 50 C 60 20, 90 40, 100 60 C 110 40, 140 20, 170 50 C 200 80, 180 120, 100 180 Z" fill="url(#lg)"/>
+                    </svg>
+                    <span><span class="logo-z">Z</span><span class="logo-oi">oi</span></span>
+                </div>
+                <p style="color: var(--text-light); font-size: 0.9rem;">Учебный проект сервиса заботы о здоровье.</p>
+            </div>
+            
+            <div class="footer-col">
+                <h4>Разделы</h4>
+                <ul>
+                    <li><a onclick="showPage('breathing')">Дыхание</a></li>
+                    <li><a onclick="showPage('water')">Вода</a></li>
+                    <li><a onclick="showPage('memory')">Память</a></li>
+                    <li><a onclick="showPage('feedback')">Обратная связь</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-col">
+                <h4>Время работы</h4>
+                <ul>
+                    <li style="color: var(--text-light);">Ежедневно: 00:00–24:00</li>
+                    <li style="color: var(--text-light);">Всегда доступно</li>
+                </ul>
+            </div>
+            
+            <div class="footer-col">
+                <h4>Контакты</h4>
+                <ul>
+                    <li style="color: var(--text-light);">📍 Онлайн</li>
+                    <li style="color: var(--text-light);">💬 Обратная связь</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>© 2026 Zoi. Учебный проект. Забота о здоровье начинается с малого. 💚</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
